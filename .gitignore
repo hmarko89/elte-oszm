@@ -170,4 +170,5 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-puzzles/*_full.py
+*_full.py
+*.lp

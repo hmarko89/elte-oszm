@@ -1,5 +1,5 @@
 # elte-oszm
-Auxiliary material for the course 'Operációkutatás Számítógépes Módszerei' at ELTE.
+Auxiliary material for the course **Operációkutatás Számítógépes Módszerei** at ELTE.
 
 ```
 ├─ cp                         : exercises for constraint programming
@@ -21,6 +21,8 @@ Auxiliary material for the course 'Operációkutatás Számítógépes Módszere
 
 ## Recommended Python packages
 
+Python 3.9 or newer version is recommended.
+
 ### <a href="https://developers.google.com/optimization" target="_blank">Google OR-Tools</a>
 
 ```
@@ -33,7 +35,13 @@ python -m pip install ortools
 python -m pip install mip
 ```
 
-### <a href="https://github.com/networkx/networkx" target="_blank">NetworkX</a>
+### <a href="https://matplotlib.org/" target="_blank">Matplotlib: Visualization with Python</a>
+
+```
+python -m pip install matplotlib
+```
+
+### <a href="https://networkx.org/" target="_blank">NetworkX: Network Analysis in Python</a>
 
 ```
 python -m pip install networkx
