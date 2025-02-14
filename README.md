@@ -3,20 +3,22 @@ Auxiliary material for the course **Operációkutatás Számítógépes Módszer
 
 ```
 ├─ cp                         : exercises for constraint programming
-│  ├─ send_more_money.py      : cryptarithmetic puzzle (SEND + MORE = MONEY)
-│  └─ queens.py               : n-queens puzzle
+│  ├─ send_more_money.py      :   cryptarithmetic puzzle (SEND + MORE = MONEY)
+│  ├─ queens.py               :   n-queens puzzle
+│  ├─ machine_scheduling.py   :   machine scheduling problems 
+|  └─ rectangle_packing.py    :   rectangle packing problems
 │
 ├─ mip                        : exercises for mixed-integer linear programming
 │
-└─ puzzles                    : puzzle exercises for cp and/or mip
-   ├─ binario.py              : binario (takuzu)
-   ├─ futoshiki.py            : futoshiki (more or less)
-   ├─ hitori.py               : hitori
-   ├─ kakurasu.py             : kakurasu
-   ├─ masyu.py                : masyu
-   ├─ skyscrapers.py          : skyscrapers (skylines, towers)
-   ├─ slitherlink.py          : slither link (fences)
-   └─ sudoku.py               : sudoku
+└─ puzzles                    : puzzle exercises for cp/mip
+   ├─ binario.py              :   binario (takuzu)
+   ├─ futoshiki.py            :   futoshiki (more or less)
+   ├─ hitori.py               :   hitori
+   ├─ kakurasu.py             :   kakurasu
+   ├─ masyu.py                :   masyu
+   ├─ skyscrapers.py          :   skyscrapers (skylines, towers)
+   ├─ slitherlink.py          :   slither link (fences)
+   └─ sudoku.py               :   sudoku
 ```
 
 ## Recommended Python packages
