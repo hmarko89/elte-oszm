@@ -9,6 +9,8 @@ Auxiliary material for the course **Operációkutatás Számítógépes Módszer
 |  └─ rectangle_packing.py    :   rectangle packing problems
 │
 ├─ mip                        : exercises for mixed-integer linear programming
+│  ├─ knapsack.py             :   knapsack problem
+|  └─ queens.py               :   n-queens puzzle
 │
 └─ puzzles                    : puzzle exercises for cp/mip
    ├─ binario.py              :   binario (takuzu)
@@ -23,7 +25,7 @@ Auxiliary material for the course **Operációkutatás Számítógépes Módszer
 
 ## Recommended Python packages
 
-Python 3.9 or newer version is recommended.
+Python 3.9 (64-bit) or newer version is recommended.
 
 ### <a href="https://developers.google.com/optimization" target="_blank">Google OR-Tools</a>
 
