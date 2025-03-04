@@ -10,7 +10,8 @@ Auxiliary material for the course **Operációkutatás Számítógépes Módszer
 │
 ├─ mip                        : exercises for mixed-integer linear programming
 │  ├─ knapsack.py             :   knapsack problem
-|  └─ queens.py               :   n-queens puzzle
+│  ├─ queens.py               :   n-queens puzzle
+|  └─ tsp.py                  :   travelling salesman problem
 │
 └─ puzzles                    : puzzle exercises for cp/mip
    ├─ binario.py              :   binario (takuzu)
