@@ -171,4 +171,5 @@ cython_debug/
 .pypirc
 
 *_full.py
+*_live.py
 *.lp

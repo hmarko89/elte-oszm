@@ -327,7 +327,7 @@ def solve_tsp_gg( graph:nx.DiGraph, draw_instance:bool= False, draw_solution:boo
 #   2.2) Use the strengthened inequalities.
 #   2.3) Modify function solve_tsp_mtz to separate subtour elimination constraints during branch-and-bound.
 # 3) GG formulation.
-#   - Implement function solve_tsp_gg to solve TSP as a MIP with MTZ-formulation.
+#   - Implement function solve_tsp_gg to solve TSP as a MIP with GG-formulation.
 
 if __name__ == '__main__':
     D = random_euclidean_graph( 12 )

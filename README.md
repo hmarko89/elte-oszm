@@ -5,13 +5,14 @@ Auxiliary material for the course **Operációkutatás Számítógépes Módszer
 ├─ cp                         : exercises for constraint programming
 │  ├─ send_more_money.py      :   cryptarithmetic puzzle (SEND + MORE = MONEY)
 │  ├─ queens.py               :   n-queens puzzle
-│  ├─ machine_scheduling.py   :   machine scheduling problems 
+│  ├─ machine_scheduling.py   :   machine scheduling problems
 |  └─ rectangle_packing.py    :   rectangle packing problems
 │
 ├─ mip                        : exercises for mixed-integer linear programming
 │  ├─ knapsack.py             :   knapsack problem
 │  ├─ queens.py               :   n-queens puzzle
-|  └─ tsp.py                  :   travelling salesman problem
+|  ├─ tsp.py                  :   travelling salesman problem
+│  └─ machine_scheduling.py   :   branch-and-cut for single machine scheduling
 │
 └─ puzzles                    : puzzle exercises for cp/mip
    ├─ binario.py              :   binario (takuzu)
@@ -27,6 +28,7 @@ Auxiliary material for the course **Operációkutatás Számítógépes Módszer
 ## Recommended Python packages
 
 Python 3.9 (64-bit) or newer version is recommended.
+(Python-MIP is not working with 3.12 or newer version).
 
 ### <a href="https://developers.google.com/optimization" target="_blank">Google OR-Tools</a>
 
