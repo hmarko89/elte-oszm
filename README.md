@@ -12,7 +12,8 @@ Auxiliary material for the course **Operációkutatás Számítógépes Módszer
 │  ├─ knapsack.py             :   knapsack problem
 │  ├─ queens.py               :   n-queens puzzle
 |  ├─ tsp.py                  :   travelling salesman problem
-│  └─ machine_scheduling.py   :   branch-and-cut for single machine scheduling
+│  ├─ machine_scheduling.py   :   branch-and-cut for single machine scheduling
+│  └─ cutting_stock.py        :   column generation for the cutting stock problem
 │
 └─ puzzles                    : puzzle exercises for cp/mip
    ├─ binario.py              :   binario (takuzu)
