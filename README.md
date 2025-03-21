@@ -15,6 +15,9 @@ Auxiliary material for the course **Operációkutatás Számítógépes Módszer
 │  ├─ machine_scheduling.py   :   branch-and-cut for single machine scheduling
 │  └─ cutting_stock.py        :   column generation for the cutting stock problem
 │
+├─ ls                         : exercises for local search based heuristics
+│  └─ tsp_ls.py               :   local search procedure for the travelling salesman problem
+│
 └─ puzzles                    : puzzle exercises for cp/mip
    ├─ binario.py              :   binario (takuzu)
    ├─ futoshiki.py            :   futoshiki (more or less)
