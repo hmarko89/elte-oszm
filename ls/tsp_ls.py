@@ -123,7 +123,7 @@ def __log_table( config:str= 'm' ) -> None:
         return
     
     for c in config:
-        if c == 't':            
+        if c == 't':
             print( '─────────────────────┬────────────' )
         elif c == 'h':
             print( 'operator             │ objval     ' )
@@ -281,6 +281,7 @@ def local_search( graph:nx.DiGraph, draw_progress:bool= True, draw_solutions:boo
 
     Args:
         - graph:          networkx digraph (with 'pos' and 'cost' attributes)
+        - draw_progress:  should we draw the cost evolution over iterations?
         - draw_solutions: should we draw solutions?
 
     Returns:
