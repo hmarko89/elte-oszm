@@ -19,6 +19,9 @@ Auxiliary material for the course **Operációkutatás Számítógépes Módszer
 │  ├─ tsp_ls.py               :   local search procedure for the travelling salesman problem
 │  └─ tsp_lsplus.py           :   local search based procedures for the travelling salesman problem
 │
+├─ misc                       : miscellaneous exercises
+│  └─ dvrp.py                 :   dynamic vehicle routing problem
+│
 └─ puzzles                    : puzzle exercises for cp/mip
    ├─ binario.py              :   binario (takuzu)
    ├─ futoshiki.py            :   futoshiki (more or less)
