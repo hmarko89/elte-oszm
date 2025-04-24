@@ -48,6 +48,8 @@ class Visit:
         self._service_end_time:int   = None
         self._departure_time:int     = None
 
+        self.rejected:bool = False
+
 class Model:
     def __init__( self ) -> None:
         self.env = simpy.Environment()
@@ -179,7 +181,7 @@ class Model:
 
     def __routing(self):
         """Routing process."""
-        visits_to_do = [ visit for visit in self.visits if visit._service_start_time is None ]
+        visits_to_do = [ visit for visit in self.visits if not visit.rejected and visit._service_start_time is None ]
 
         if len(visits_to_do) == 0:            
             print( f'{self.env.now:5d} | there are no more visits at the moment' )
@@ -214,14 +216,8 @@ def calculate_finish_time( current_time:int, current_visit:Visit, visits_to_do:l
     return finish_time
 
 def routing_algorithm( current_time:int, current_visit:Visit, visits_to_do:list[Visit] ) -> list[Visit]:
-    """Routing algorithm."""
-    best_route:list[Visit] = None
-    
-    best_route = min( it.permutations(visits_to_do),
-               key= lambda route: calculate_finish_time( current_time, current_visit, route ) )
-    
-    if current_time + travel_time( current_visit.location, best_route[0].location ) < best_route[0].earliest_service_start_time:
-        return []
+    """Routing algorithm."""    
+    best_route = min( it.permutations(visits_to_do), key= lambda route: calculate_finish_time( current_time, current_visit, route ) )
 
     return best_route
 
