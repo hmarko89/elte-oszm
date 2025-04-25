@@ -20,7 +20,8 @@ Auxiliary material for the course **Operációkutatás Számítógépes Módszer
 │  └─ tsp_lsplus.py           :   local search based procedures for the travelling salesman problem
 │
 ├─ misc                       : miscellaneous exercises
-│  └─ dvrp.py                 :   dynamic vehicle routing problem
+│  ├─ dvrp.py                 :   dynamic vehicle routing problem
+│  └─ takttime.py             :   takt time minimization problem
 │
 └─ puzzles                    : puzzle exercises for cp/mip
    ├─ binario.py              :   binario (takuzu)

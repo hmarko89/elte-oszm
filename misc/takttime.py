@@ -29,61 +29,53 @@ def solve( product_route:list[dict], travel_time:int ) -> None:
         - product_route: route (sequence of stations)
         - travel_time:   uniform travel time between two adjacent stations
     """
-    # init
+    # INIT
     stations = product_route[1:-1]
     nstations = len(stations)
     STATIONS = range(nstations)
+
+    # big-M (calculated as the takt time of the straightforward solution)    
+    M = sum( stations[i]['min_time'] for i in STATIONS ) + 2 * travel_time * (len(product_route)-1)
 
     # BUILD GRAPH
     D = nx.DiGraph()
 
     # nodes
-    D.add_node( 'START' )
-    D.add_node( 'IN' )
-    D.add_nodes_from( [f'begin_{i}' for i in STATIONS ] )
-    D.add_nodes_from( [f'end_{i}' for i in STATIONS ] )
-    D.add_node( 'OUT' )
-    D.add_node( 'END' )
+    D.add_node( 'IN' )                                     # in event (source node)
+    D.add_nodes_from( [f'start_{i}' for i in STATIONS ] )  # start events for the operations
+    D.add_nodes_from( [f'finish_{i}' for i in STATIONS ] ) # finish events for the operations
+    D.add_node( 'OUT' )                                    # out event
+    D.add_node( 'END' )                                    # takt event (sink node)
 
-    # node positions
+    # node positions (for travel times)
     position = dict()
-    position['START']  = 0
-    position['IN']  = 0
+    position['IN'] = 0
     position['OUT'] = nstations + 1
     position['END'] = 0
     for i in STATIONS:
-        position[f'begin_{i}'] = i+1
-        position[f'end_{i}'] = i+1
+        position[f'start_{i}'] = i+1
+        position[f'finish_{i}'] = i+1
 
-    # edges
-    D.add_edge( 'START', 'IN' )
-    D.add_edge( 'IN', f'begin_{0}' )
-    D.add_edge( f'end_{nstations-1}', 'OUT' )
+    # mandatory edges (pick -> corresponding drop)
+    D.add_edge( 'IN', f'start_{0}' )
+    D.add_edges_from( (f'finish_{i-1}', f'start_{i}') for i in range(1,nstations) )
+    D.add_edge( f'finish_{nstations-1}', 'OUT' )
+
+    # selectable edges (some pick (or END) after some drop)
+    D.add_edges_from( (f'start_{i}', f'finish_{j}') for (i,j) in it.product(STATIONS,STATIONS) )
+    D.add_edges_from( ('OUT', f'finish_{i}') for i in STATIONS )
+
     D.add_edge( 'OUT', 'END' )
-
-    for i in STATIONS:
-        D.add_edge( 'OUT', f'end_{i}' )
-        D.add_edge( f'end_{i}', 'END' )
-
-        if 0 < i:
-            D.add_edge( f'end_{i-1}', f'begin_{i}' )
-
-    for (i,j) in it.product(STATIONS,STATIONS):
-        D.add_edge( f'begin_{i}', f'end_{j}' )
+    D.add_edges_from( (f'start_{i}', 'END') for i in STATIONS )
 
     # BUILD MODEL
-    M = sum( stations[i]['max_time'] for i in STATIONS ) + 2 * travel_time * (len(product_route)-1) # big-M
-
     model = mip.Model( sense= mip.MINIMIZE )
-
-    # takt time variable
-    taktvar = model.add_var( name= 'takt', var_type= mip.CONTINUOUS, obj= 1.0 )
 
     # node time variables
     t = { node : model.add_var( name= f't_{node}', var_type= mip.CONTINUOUS ) for node in D.nodes }
 
-    model += t['START'] == 0
-    model += t['END'] == taktvar
+    model += t['IN'] == 0
+    model.objective = t['END']
 
     # edge variables
     x = { (i,j): model.add_var( name= f'x_{i}_{j}', var_type= mip.BINARY ) for (i,j) in D.edges }        
@@ -93,46 +85,52 @@ def solve( product_route:list[dict], travel_time:int ) -> None:
         if i != 'END':
             model += mip.xsum( x[edge] for edge in D.out_edges(i) ) == 1
 
-        if i != 'START':
+        if i != 'IN':
             model += mip.xsum( x[edge] for edge in D.in_edges(i) ) == 1
 
     # travel time
     for (i,j) in D.edges:
         model += t[i] + travel_time * abs( position[i] - position[j] ) <= t[j] + (1 - x[(i,j)])*M
 
-    # time warp variables and constraints
+    # time wrap variables (y=1 <=> there is no time wrap)
     y = { i: model.add_var( name= f'y_{i}', var_type= mip.BINARY ) for i in STATIONS }
 
+    # min-max time constraints
     for i in STATIONS:
-        # minimum time at station
-        model += stations[i]['min_time'] <= t[f'end_{i}'] - t[f'begin_{i}'] + (1 - y[i])*M
-        model += t[f'end_{i}'] - t[f'begin_{i}'] <= stations[i]['max_time'] + (1 - y[i])*M
+        # min-max times within period (i.e., no time wrap)
+        model += stations[i]['min_time'] <= t[f'finish_{i}'] - t[f'start_{i}'] + (1 - y[i])*M
+        model += t[f'finish_{i}'] - t[f'start_{i}'] <= stations[i]['max_time'] + (1 - y[i])*M
 
-        # maximum time at station
-        model += stations[i]['min_time'] <= t[f'end_{i}'] - t[f'begin_{i}'] + taktvar + y[i]*M
-        model += t[f'end_{i}'] - t[f'begin_{i}'] + taktvar <= stations[i]['max_time'] + y[i]*M
+        # min-max times through periods (i.e., time wrap)
+        model += stations[i]['min_time'] <= t[f'finish_{i}'] - t[f'start_{i}'] + t['END'] + y[i]*M
+        model += t[f'finish_{i}'] - t[f'start_{i}'] + t['END'] <= stations[i]['max_time'] + y[i]*M
 
         # for the sake of correct drawing in the case of 'OPT <= min_time'
-        model += 1 <= t[f'end_{i}'] - t[f'begin_{i}'] + (1- y[i])*M
-        model += 1 <= t[f'begin_{i}'] - t[f'end_{i}'] + y[i]*M
+        model += 1 <= t[f'finish_{i}'] - t[f'start_{i}'] + (1- y[i])*M
+        model += 1 <= t[f'start_{i}'] - t[f'finish_{i}'] + y[i]*M
+
+    # test (to forbid time wrap)
+    # for var in y.values():
+    #     model += var == 1
 
     # SOLVE
     model.optimize()
 
     if model.status not in [ mip.OptimizationStatus.OPTIMAL, mip.OptimizationStatus.FEASIBLE ]:
-        print( f'! model status: {model.status}' )
+        print( f'model status: {model.status}' )
         model.write( 'takt_time.lp' )
+        return
 
     # DRAW SOLUTION
     _, ax = plt.subplots()
 
     for i in STATIONS:
         if 0.5 < y[i].x:
-            ax.add_patch( Rectangle( (t[f'begin_{i}'].x, 10*position[f'begin_{i}'] +2), t[f'end_{i}'].x - t[f'begin_{i}'].x, 6, facecolor = 'lightgreen', fill=True ) )
+            ax.add_patch( Rectangle( (t[f'start_{i}'].x, 10*position[f'start_{i}'] +2), t[f'finish_{i}'].x - t[f'start_{i}'].x, 6, facecolor = 'lightgreen', fill=True ) )
 
         else:
-            ax.add_patch( Rectangle( (0, 10*position[f'end_{i}'] +2), t[f'end_{i}'].x, 6, facecolor = 'wheat', fill=True) )
-            ax.add_patch( Rectangle( (t[f'begin_{i}'].x, 10*position[f'begin_{i}'] +2), taktvar.x -t[f'begin_{i}'].x, 6, facecolor = 'wheat', fill=True) )
+            ax.add_patch( Rectangle( (0, 10*position[f'finish_{i}'] +2), t[f'finish_{i}'].x, 6, facecolor = 'wheat', fill=True) )
+            ax.add_patch( Rectangle( (t[f'start_{i}'].x, 10*position[f'start_{i}'] +2), t['END'].x -t[f'start_{i}'].x, 6, facecolor = 'wheat', fill=True) )
 
     for (i,j) in [ edge for edge in D.edges() if 0.5 < x[edge].x ]:
         plt.plot( (t[i].x, t[j].x), (10*position[i] +5, 10*position[j] +5), color='black', linewidth=2 )
